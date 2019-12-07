@@ -4,7 +4,9 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import Dropdown from 'react-bootstrap/Dropdown';
 import FormControl from "react-bootstrap/FormControl";
 
+// import { createAction } from 'redux-actions';
 import netflixCategories from './netflix-categories'
+// import { createStore } from 'redux'
 
 const NETFLIX_URL = 'https://www.netflix.com/browse/genre/';
 
@@ -29,7 +31,7 @@ const CustomMenu = React.forwardRef(
                 <ul className="list-unstyled">
                     {React.Children.toArray(children).filter(
                         child =>
-                            !value || child.props.children.toLowerCase().startsWith(value),
+                            !value || (child.props.children.toLowerCase().indexOf(value.toLowerCase()) >= 0),
                     )}
                 </ul>
             </div>
@@ -42,9 +44,14 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            categories: netflixCategories.NETFLIX_CATEGORIES
+            categories: netflixCategories.NETFLIX_CATEGORIES,
+            favourites: []
         }
     }
+
+    onClick = (id) => {
+        return true;
+    };
 
     render() {
         const {categories} = this.state;
@@ -61,7 +68,7 @@ class App extends Component {
                     </Dropdown.Toggle>
                     <Dropdown.Menu  as={CustomMenu}>
                         {categories.map((c) => (
-                            <Dropdown.Item key={c.id} href={NETFLIX_URL + c.id} target="_blank">
+                            <Dropdown.Item key={c.id} href={NETFLIX_URL + c.id} onClick={this.onClick.bind(this, c.id)} target="_blank">
                                 {c.category}
                             </Dropdown.Item>
                         ))}
